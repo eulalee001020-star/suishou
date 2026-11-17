@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>随手</title>
+    <link rel="stylesheet" href="common.css" />
+    <style>
+      body { width: 380px; min-height: 420px; max-height: 580px; overflow-y: auto; }
+      header { display: flex; align-items: center; gap: 4px; padding: 10px 12px 0; position: sticky; top: 0; background: var(--bg); z-index: 1; }
+      .tab { padding: 6px 12px; border-radius: 6px; font-weight: 600; color: var(--muted); }
+      .tab.on { color: var(--accent); background: var(--accent-soft); }
+      .tab .count { font-weight: 400; margin-left: 4px; }
+      header .spacer { flex: 1; }
+      header .open { font-size: 12px; color: var(--muted); padding: 6px; }
+      main { padding: 10px 12px 14px; }
+      .panel[hidden] { display: none; }
+      .sub { display: flex; justify-content: space-between; font-size: 12px; margin-top: 6px; }
+      .stat { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px;
+        border: 1px solid var(--line); border-radius: var(--radius); margin-bottom: 8px; }
+      .stat b { font-size: 18px; }
+      .tip { font-size: 12px; color: var(--faint); margin-top: 10px; line-height: 1.6; }
+      kbd { font: 11px ui-monospace, monospace; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 4px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <button class="tab on" data-tab="tasks">待办<span class="count" id="count-tasks"></span></button>
+      <button class="tab" data-tab="saved">收藏<span class="count" id="count-review"></span></button>
+      <span class="spacer"></span>
+      <button class="open" id="open-app" title="打开完整页面">完整页面 ↗</button>
+    </header>
+    <main>
+      <section class="panel" id="panel-tasks"></section>
+      <section class="panel" id="panel-saved" hidden></section>
+    </main>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

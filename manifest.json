@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "随手：待办与收藏回顾",
+  "short_name": "随手",
+  "version": "0.1.0",
+  "description": "一句话记待办；上网和跟 AI 聊天时随手收藏重点，按周按月回顾。数据只存在本机。",
+  "icons": { "16": "icons/icon16.png", "48": "icons/icon48.png", "128": "icons/icon128.png" },
+  "action": {
+    "default_popup": "src/ui/popup.html",
+    "default_title": "随手（Alt+T）",
+    "default_icon": { "16": "icons/icon16.png", "48": "icons/icon48.png" }
+  },
+  "options_ui": { "page": "src/ui/app.html", "open_in_tab": true },
+  "background": { "service_worker": "src/background/service-worker.js", "type": "module" },
+  "permissions": ["storage", "unlimitedStorage", "contextMenus", "alarms", "notifications", "activeTab"],
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["src/content/content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    { "resources": ["src/core/anchor.js"], "matches": ["http://*/*", "https://*/*"] }
+  ],
+  "commands": {
+    "_execute_action": { "suggested_key": { "default": "Alt+T" }, "description": "打开随手，记一条待办" },
+    "save-selection": { "suggested_key": { "default": "Alt+S" }, "description": "收藏选中的文字" }
+  }
+}

@@ -1,0 +1,94 @@
+:root {
+  --accent: #d9480f;
+  --accent-soft: #fff1e8;
+  --text: #1f2328;
+  --muted: #656d76;
+  --faint: #8c959f;
+  --line: #e4e8ec;
+  --bg: #ffffff;
+  --bg-soft: #f6f8fa;
+  --p1: #cf222e;
+  --p2: #d9730d;
+  --p3: #0969da;
+  --p4: #8c959f;
+  --mark: #ffe89a;
+  --radius: 8px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  color: var(--text);
+  background: var(--bg);
+  font: 14px/1.5 -apple-system, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+}
+
+button { font: inherit; color: inherit; cursor: pointer; background: none; border: 0; padding: 0; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+input, textarea, select { font: inherit; color: inherit; }
+
+.btn { padding: 6px 12px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); }
+.btn:hover { background: var(--bg-soft); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn.primary:hover { filter: brightness(0.95); }
+.btn.small { padding: 3px 8px; font-size: 12px; }
+.link { color: var(--accent); }
+.link:hover { text-decoration: underline; }
+.muted { color: var(--muted); }
+.faint { color: var(--faint); }
+
+/* ── quick add ─────────────────────────────────────────── */
+.quick { border: 1px solid var(--line); border-radius: var(--radius); padding: 8px 10px; background: var(--bg); }
+.quick:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.quick input { width: 100%; border: 0; outline: 0; background: transparent; font-size: 14px; padding: 2px 0; }
+.quick .preview { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; min-height: 0; }
+.quick .preview:empty { display: none; }
+.quick .hint { font-size: 12px; color: var(--faint); margin-top: 4px; }
+
+.chip { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; line-height: 1; padding: 4px 8px;
+  border-radius: 999px; background: var(--bg-soft); color: var(--muted); white-space: nowrap; }
+.chip.date { background: var(--accent-soft); color: var(--accent); }
+.chip.p1 { background: #ffebe9; color: var(--p1); }
+.chip.p2 { background: #fff1e0; color: var(--p2); }
+.chip.p3 { background: #ddf4ff; color: var(--p3); }
+.chip.overdue { background: #ffebe9; color: var(--p1); }
+button.chip:hover { filter: brightness(0.96); }
+.chip.active { background: var(--accent); color: #fff; }
+
+/* ── task rows ─────────────────────────────────────────── */
+.task { display: flex; gap: 10px; align-items: flex-start; padding: 8px 4px; border-bottom: 1px solid var(--line); }
+.task:last-child { border-bottom: 0; }
+.task .check { flex: none; width: 18px; height: 18px; margin-top: 2px; border-radius: 50%; border: 2px solid var(--p4); }
+.task .check:hover { background: var(--bg-soft); }
+.task.p1 .check { border-color: var(--p1); background: #ffebe9; }
+.task.p2 .check { border-color: var(--p2); background: #fff1e0; }
+.task.p3 .check { border-color: var(--p3); background: #ddf4ff; }
+.task.done .check { background: var(--faint); border-color: var(--faint); }
+.task.done .title { color: var(--faint); text-decoration: line-through; }
+.task .body { flex: 1; min-width: 0; }
+.task .title { word-break: break-word; }
+.task .meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.task .meta:empty { display: none; }
+.task .actions { flex: none; display: flex; gap: 6px; opacity: 0; }
+.task:hover .actions, .task:focus-within .actions { opacity: 1; }
+.task .actions button { color: var(--faint); font-size: 12px; }
+.task .actions button:hover { color: var(--text); }
+
+.section-title { font-size: 12px; font-weight: 600; color: var(--muted); margin: 14px 0 2px; display: flex; gap: 6px; align-items: baseline; }
+.section-title.overdue { color: var(--p1); }
+.empty { color: var(--faint); padding: 18px 4px; text-align: center; }
+
+/* ── highlight cards ───────────────────────────────────── */
+.hl { padding: 12px 0; border-bottom: 1px solid var(--line); }
+.hl:last-child { border-bottom: 0; }
+.hl blockquote { margin: 0; padding-left: 10px; border-left: 3px solid #f2c94c; white-space: pre-wrap; word-break: break-word; }
+.hl .note { margin-top: 6px; color: var(--muted); }
+.hl .meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 8px; font-size: 12px; color: var(--faint); }
+.hl .meta a { color: var(--muted); max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hl .actions { margin-left: auto; display: flex; gap: 10px; opacity: 0; }
+.hl:hover .actions, .hl:focus-within .actions { opacity: 1; }
+.hl .actions button { color: var(--faint); }
+.hl .actions button:hover { color: var(--text); }
+.chip.ai { background: #f1e8ff; color: #6639ba; }
