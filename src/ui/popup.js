@@ -5,7 +5,7 @@ import { periodRange } from '../core/digest.js';
 import { backlogCount, dueForReview } from '../core/review.js';
 import { Store } from '../core/store.js';
 import { viewToday, viewUpcoming } from '../core/tasks.js';
-import { clear, h, highlightCard, openApp, quickAdd, taskRow } from './common.js';
+import { clear, put, h, highlightCard, openApp, quickAdd, taskRow } from './common.js';
 
 const store = new Store();
 const tasksPanel = document.getElementById('panel-tasks');
@@ -35,7 +35,7 @@ async function render() {
   if (!quick) {
     quick = quickAdd({ onAdd: (draft) => store.addTask(draft) });
     const tab = await currentTab();
-    tasksPanel.append(
+    put(tasksPanel, 
       quick,
       h(
         'div',
@@ -54,18 +54,18 @@ async function render() {
   }
   const lists = clear(document.getElementById('task-lists'));
   if (overdue.length) {
-    lists.append(
+    put(lists, 
       h('div', { class: 'section-title overdue' }, `已过期 ${overdue.length}`),
       overdue.map((task) => taskRow(task, actions)),
     );
   }
-  lists.append(h('div', { class: 'section-title' }, `今天 ${today.length || ''}`));
-  lists.append(
+  put(lists, h('div', { class: 'section-title' }, `今天 ${today.length || ''}`));
+  put(lists, 
     today.length
       ? today.map((task) => taskRow(task, actions))
       : h('div', { class: 'empty' }, overdue.length ? '今天没有别的安排' : '今天没有待办，记一条试试'),
   );
-  lists.append(
+  put(lists, 
     h(
       'div',
       { class: 'sub' },
@@ -82,7 +82,7 @@ async function render() {
   document.getElementById('count-review').textContent = todayReview || '';
   const recent = [...highlights].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1)).slice(0, 4);
 
-  clear(savedPanel).append(
+  put(clear(savedPanel), 
     h(
       'div',
       { class: 'stat' },

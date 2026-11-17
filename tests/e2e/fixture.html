@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <title>调度笔记</title>
+    <link rel="icon" href="data:," />
+    <style>body { font: 16px/1.8 sans-serif; max-width: 680px; margin: 40px auto; }</style>
+  </head>
+  <body>
+    <h1>关于排程的几条笔记</h1>
+    <p id="p1">调度算法的难点多半不在求解，而在把<b>业务规则</b>翻译成约束。不懂业务，算法学不深。</p>
+    <p id="p2">ERP 的本质是业务流程的固化。先会用，再会开发。</p>
+    <p id="p3">这很重要。但是同一句话出现第二次：这很重要。</p>
+    <textarea id="ta">这里是输入框里的文字</textarea>
+    <div id="late"></div>
+    <script>
+      // Like a chat page: part of the content arrives after load.
+      setTimeout(() => {
+        document.getElementById('late').innerHTML = '<p id="p4">这段话是页面加载之后才出现的，像 AI 对话里的回复。</p>';
+      }, 1500);
+    </script>
+  </body>
+</html>

@@ -15,11 +15,16 @@ export function h(tag, attrs = {}, ...children) {
     else if (key in element && key !== 'list') element[key] = value;
     else element.setAttribute(key, value === true ? '' : value);
   }
+  return put(element, ...children);
+}
+
+/** Append children, flattening arrays and skipping empty values (unlike Element.append). */
+export function put(parent, ...children) {
   for (const child of children.flat(Infinity)) {
     if (child === null || child === undefined || child === false) continue;
-    element.append(child instanceof Node ? child : document.createTextNode(String(child)));
+    parent.append(child instanceof Node ? child : document.createTextNode(String(child)));
   }
-  return element;
+  return parent;
 }
 
 export function clear(element) {

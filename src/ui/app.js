@@ -10,7 +10,7 @@ import { DEFAULT_SETTINGS, Store } from '../core/store.js';
 import {
   attentionCount, projectCounts, viewDone, viewInbox, viewProject, viewToday, viewUpcoming,
 } from '../core/tasks.js';
-import { clear, downloadText, h, highlightCard, quickAdd, taskRow } from './common.js';
+import { clear, put, downloadText, h, highlightCard, quickAdd, taskRow } from './common.js';
 
 const store = new Store();
 const nav = document.getElementById('nav');
@@ -48,7 +48,7 @@ function renderNav(state, now) {
       label,
       count ? h('span', { class: `n${alert ? ' alert' : ''}` }, count) : null,
     );
-  clear(nav).append(
+  put(clear(nav), 
     h('div', { class: 'brand' }, '随手', h('small', {}, '待办 · 收藏回顾')),
     h('div', { class: 'group' }, '待办'),
     item('today', '今天', overdue.length + today.length, overdue.length > 0),
@@ -148,7 +148,7 @@ function taskList(tasks, now) {
 function renderToday(state, now) {
   const { overdue, today } = viewToday(state.tasks, now);
   const date = `${now.getMonth() + 1}月${now.getDate()}日 ${WEEKDAYS[now.getDay()]}`;
-  view.append(
+  put(view, 
     h('h1', {}, '今天'),
     h('p', { class: 'lede' }, date),
     quickAdd({ onAdd: (draft) => store.addTask(draft.due ? draft : { ...draft, due: `${dayKey(now)}T00:00` }), placeholder: '写下要做的事，回车。可以带时间、p1、#项目、每周五' }),
@@ -160,19 +160,19 @@ function renderToday(state, now) {
 
 function renderUpcoming(state, now) {
   const groups = viewUpcoming(state.tasks, now, 365);
-  view.append(h('h1', {}, '接下来'), h('p', { class: 'lede' }, '明天起有日期的待办'), quickAdd({ onAdd: (d) => store.addTask(d) }));
-  if (!groups.length) view.append(h('div', { class: 'empty' }, '之后几天还没有安排。'));
+  put(view, h('h1', {}, '接下来'), h('p', { class: 'lede' }, '明天起有日期的待办'), quickAdd({ onAdd: (d) => store.addTask(d) }));
+  if (!groups.length) put(view, h('div', { class: 'empty' }, '之后几天还没有安排。'));
   for (const group of groups) {
     const day = fromLocalIso(group.day);
     const diff = Math.round((day - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 86400000);
     const label = `${diff === 1 ? '明天 · ' : diff === 2 ? '后天 · ' : ''}${day.getMonth() + 1}月${day.getDate()}日 ${WEEKDAYS[day.getDay()]}`;
-    view.append(h('div', { class: 'section-title' }, label), taskList(group.tasks, now));
+    put(view, h('div', { class: 'section-title' }, label), taskList(group.tasks, now));
   }
 }
 
 function renderInbox(state, now) {
   const tasks = viewInbox(state.tasks);
-  view.append(
+  put(view, 
     h('h1', {}, '收件箱'),
     h('p', { class: 'lede' }, '没有日期也没有项目的待办。想到就先记在这里。'),
     quickAdd({ onAdd: (d) => store.addTask(d), placeholder: '先记下来，以后再排时间' }),
@@ -182,7 +182,7 @@ function renderInbox(state, now) {
 
 function renderProject(state, now, name) {
   const tasks = viewProject(state.tasks, name);
-  view.append(
+  put(view, 
     h('h1', {}, `# ${name}`),
     h('p', { class: 'lede' }, `${tasks.length} 项未完成`),
     quickAdd({ onAdd: (d) => store.addTask(d), extra: { project: name }, placeholder: `添加到 ${name}` }),
@@ -192,7 +192,7 @@ function renderProject(state, now, name) {
 
 function renderDone(state, now) {
   const tasks = viewDone(state.tasks, 100);
-  view.append(
+  put(view, 
     h('h1', {}, '已完成'),
     h('p', { class: 'lede' }, '最近完成的 100 项。点圆圈可以恢复。'),
     tasks.length ? taskList(tasks, now) : h('div', { class: 'empty' }, '还没有完成的待办。'),
@@ -256,13 +256,13 @@ function renderLibrary(state) {
       filter.query = search.value;
       const list = document.getElementById('library-list');
       const found = searchHighlights(state.highlights, filter);
-      clear(list).append(found.length ? highlightList(found) : h('div', { class: 'empty' }, '没有找到。'));
+      put(clear(list), found.length ? highlightList(found) : h('div', { class: 'empty' }, '没有找到。'));
       document.getElementById('library-count').textContent = `${found.length} 条`;
     },
   });
   const kindChip = (label, kind) =>
     h('button', { class: `chip${filter.kind === kind ? ' active' : ''}`, onclick: () => { filter.kind = kind; render(); } }, label);
-  view.append(
+  put(view, 
     h('h1', {}, '收藏库'),
     h('p', { class: 'lede' }, '在网页和 AI 对话里随手收下来的话。'),
     h('div', { class: 'toolbar' }, search, h('span', { class: 'muted', id: 'library-count' }, `${results.length} 条`)),
@@ -302,9 +302,9 @@ function renderReview(state, now) {
   const current = byId.get(ui.reviewQueue[0]);
   const waiting = backlogCount(state.highlights, now);
 
-  view.append(h('h1', {}, '每日重温'), h('p', { class: 'lede' }, '每天把几条旧收藏拿出来再看一眼。看过的会隔得越来越久才回来。'));
+  put(view, h('h1', {}, '每日重温'), h('p', { class: 'lede' }, '每天把几条旧收藏拿出来再看一眼。看过的会隔得越来越久才回来。'));
   if (!current) {
-    view.append(
+    put(view, 
       h(
         'div',
         { class: 'empty' },
@@ -320,7 +320,7 @@ function renderReview(state, now) {
     await store.gradeHighlight(current.id, value);
   };
   const nextBox = Math.min((current.review?.box ?? 0) + 1, INTERVALS.length - 1);
-  view.append(
+  put(view, 
     h('div', { class: 'progress' }, h('i', { style: `width:${(ui.reviewDone / total) * 100}%` })),
     h('p', { class: 'muted' }, `第 ${ui.reviewDone + 1} / ${total} 条`),
     h(
@@ -360,7 +360,7 @@ function renderDigest(state, now, kind) {
     return kind === 'week' ? WEEKDAYS[day.getDay()] : day.getDate() % 5 === 1 ? String(day.getDate()) : '';
   };
 
-  view.append(
+  put(view, 
     h(
       'div',
       { class: 'period' },
@@ -406,20 +406,20 @@ function renderDigest(state, now, kind) {
   );
 
   if (!digest.savedCount && !digest.tasks.completedCount) {
-    view.append(h('div', { class: 'empty' }, '这段时间没有收藏，也没有完成的待办。'));
+    put(view, h('div', { class: 'empty' }, '这段时间没有收藏，也没有完成的待办。'));
     return;
   }
   if (digest.keywords.length) {
-    view.append(h('h2', {}, '高频词'), h('div', { class: 'chips' }, digest.keywords.map((k) => h('span', { class: 'chip' }, `${k.word} ${k.count}`))));
+    put(view, h('h2', {}, '高频词'), h('div', { class: 'chips' }, digest.keywords.map((k) => h('span', { class: 'chip' }, `${k.word} ${k.count}`))));
   }
   if (digest.sources.length) {
-    view.append(h('h2', {}, '来源'), h('div', { class: 'chips' }, digest.sources.map((s) => h('span', { class: 'chip' }, `${s.name} ${s.count}`))));
+    put(view, h('h2', {}, '来源'), h('div', { class: 'chips' }, digest.sources.map((s) => h('span', { class: 'chip' }, `${s.name} ${s.count}`))));
   }
   for (const topic of digest.topics) {
-    view.append(h('h2', {}, `${topic.name === '未分类' ? '未分类' : `#${topic.name}`}（${topic.items.length}）`), highlightList(topic.items));
+    put(view, h('h2', {}, `${topic.name === '未分类' ? '未分类' : `#${topic.name}`}（${topic.items.length}）`), highlightList(topic.items));
   }
   if (digest.tasks.completed.length) {
-    view.append(
+    put(view, 
       h('h2', {}, `完成的待办（${digest.tasks.completedCount}）`),
       h('div', { class: 'chips' }, digest.tasks.byProject.map((p) => h('span', { class: 'chip' }, `${p.name} ${p.count}`))),
       digest.tasks.completed.map((task) => h('div', { class: 'task done' }, h('span', { class: 'check' }), h('div', { class: 'body' }, h('div', { class: 'title' }, task.title)))),
@@ -448,7 +448,7 @@ function renderSettings(state) {
       render();
     },
   });
-  view.append(
+  put(view, 
     h('h1', {}, '设置'),
     h('p', { class: 'lede' }, `数据只存在这台电脑的浏览器里：${state.tasks.length} 项待办，${state.highlights.length} 条收藏。`),
     row('到点提醒', '带时间的待办到点时弹出系统通知。', toggle('reminders')),
@@ -503,7 +503,7 @@ async function render() {
   renderNav(state, now);
   clear(view);
   if (ui.notice) {
-    view.append(h('div', { class: 'notice', role: 'status' }, ui.notice));
+    put(view, h('div', { class: 'notice', role: 'status' }, ui.notice));
     ui.notice = '';
   }
   const routes = {
