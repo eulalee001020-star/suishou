@@ -5,7 +5,7 @@
   "type": "module",
   "description": "随手：待办与收藏回顾（Chrome 扩展）",
   "scripts": {
-    "test": "node --test tests/",
+    "test": "node --test tests/*.test.js",
     "check": "node tools/check.js"
   },
   "license": "MIT"
